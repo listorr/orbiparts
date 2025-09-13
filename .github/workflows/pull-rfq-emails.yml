@@ -26,9 +26,8 @@ jobs:
           BODY: ${{ secrets.FUNCTION_PAYLOAD }}
         run: |
           set -euo pipefail
-          echo "Key length: ${#KEY}"   # debería ser > 0
-          echo "Curl (headers masked) -> -H Authorization and -H apikey deben verse debajo"
-          echo curl -X POST "$URL" -H "Authorization: Bearer ***" -H "apikey: ***" -H "Content-Type: application/json" --data "${BODY:-{}}"
+          echo "Key length: ${#KEY}"
+          echo "Curl (headers masked) ->"; echo curl -X POST "$URL" -H "Authorization: Bearer ***" -H "apikey: ***" -H "Content-Type: application/json" --data "${BODY:-{}}"
           STATUS=$(curl -sS -o response.json -w "%{http_code}" -X POST "$URL" -H "Authorization: Bearer $KEY" -H "apikey: $KEY" -H "Content-Type: application/json" --data "${BODY:-{}}")
           echo "HTTP Status: $STATUS"
           echo "Response body:"; cat response.json
