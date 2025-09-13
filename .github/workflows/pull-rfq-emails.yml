@@ -1,0 +1,17 @@
+name: Pull RFQ Emails (Supabase)
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # cada 5 minutos
+  workflow_dispatch: {}      # también permite lanzarlo manualmente
+
+jobs:
+  run-pull:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit Supabase Edge Function (POST)
+        run: |
+          curl -sS -X POST "https://pibbqroawdvfsouronmn.supabase.co/functions/v1/pull-rfq-emails" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            -w "\nHTTP %{http_code}\n"
