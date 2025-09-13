@@ -3,7 +3,7 @@ name: Pull RFQ Emails (Supabase)
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: "*/5 * * * *"   # cada 5 minutos
+    - cron: "*/5 * * * *"
 
 jobs:
   run-pull:
@@ -18,7 +18,7 @@ jobs:
           [ -n "${SUPABASE_URL:-}" ] || (echo "Missing SUPABASE_URL" && exit 1)
           [ -n "${SUPABASE_SERVICE_ROLE_KEY:-}" ] || (echo "Missing SUPABASE_SERVICE_ROLE_KEY" && exit 1)
 
-      - name: Call Edge Function (POST, single-line curl)
+      - name: Call Edge Function (POST, single line)
         shell: bash
         env:
           URL: ${{ secrets.SUPABASE_URL }}/functions/v1/pull-rfq-emails
@@ -26,6 +26,9 @@ jobs:
           BODY: ${{ secrets.FUNCTION_PAYLOAD }}
         run: |
           set -euo pipefail
+          echo "Key length: ${#KEY}"   # debería ser > 0
+          echo "Curl (headers masked) -> -H Authorization and -H apikey deben verse debajo"
+          echo curl -X POST "$URL" -H "Authorization: Bearer ***" -H "apikey: ***" -H "Content-Type: application/json" --data "${BODY:-{}}"
           STATUS=$(curl -sS -o response.json -w "%{http_code}" -X POST "$URL" -H "Authorization: Bearer $KEY" -H "apikey: $KEY" -H "Content-Type: application/json" --data "${BODY:-{}}")
           echo "HTTP Status: $STATUS"
           echo "Response body:"; cat response.json
